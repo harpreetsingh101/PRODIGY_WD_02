@@ -1,26 +1,145 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Stopwatch | Prodigy Task 02</title>
+  <title>Chrono | Prodigy Task 02</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <div class="container">
-    <h1>Stopwatch</h1>
+  <div class="bg-grid"></div>
+  <div class="bg-glow" id="bgGlow"></div>
 
-    <div id="display">
-      00:00:00
-    </div>
+  <div class="app-wrapper">
 
-    <div class="buttons">
-      <button id="start">Start</button>
-      <button id="pause">Pause</button>
-      <button id="reset">Reset</button>
-    </div>
+    <!-- Header -->
+    <header class="header">
+      <h1>CHRONO</h1>
+      <p class="header-sub">PRODIGY TASK 02</p>
+    </header>
+
+    <!-- Tab Nav -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="stopwatch">⏱ Stopwatch</button>
+      <button class="tab"        data-tab="countdown">⏳ Countdown</button>
+      <button class="tab"        data-tab="clock">🕐 Clock</button>
+    </nav>
+
+    <!-- ===================== STOPWATCH ===================== -->
+    <section class="tab-panel active" id="panel-stopwatch">
+      <div class="timer-container">
+        <svg class="ring-svg" viewBox="0 0 240 240">
+          <circle class="ring-bg"  cx="120" cy="120" r="108"></circle>
+          <circle class="ring-progress" id="sw-ring" cx="120" cy="120" r="108"></circle>
+        </svg>
+        <div class="timer-inner">
+          <div class="timer-display" id="sw-display">00:00.00</div>
+          <div class="timer-label"  id="sw-label">Ready</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-start" id="sw-startBtn">START</button>
+        <button class="btn btn-lap"   id="sw-lapBtn" disabled>LAP</button>
+        <button class="btn btn-reset" id="sw-resetBtn">RESET</button>
+      </div>
+      <button class="btn btn-save-trigger" id="sw-saveTrigger" style="display:none;">💾 Save Session</button>
+      <div class="save-section" id="sw-saveSection" style="display:none;">
+        <input type="text" class="save-input" id="sw-saveInput" placeholder="Session name..." autocomplete="off" />
+        <button class="btn-save" id="sw-saveBtn">SAVE</button>
+      </div>
+      <div class="laps-panel" id="sw-lapsPanel" style="display:none;">
+        <div class="laps-header">
+          <span>LAPS</span>
+          <span class="lap-count" id="sw-lapCount">0</span>
+        </div>
+        <div class="laps-list" id="sw-lapsList"></div>
+      </div>
+      <div class="saved-panel">
+        <button class="saved-toggle" id="sw-savedToggle">
+          <span class="arrow" id="sw-savedArrow">▶</span>
+          SAVED (<span id="sw-savedCount">0</span>)
+        </button>
+        <div class="saved-list" id="sw-savedList" style="display:none;"></div>
+      </div>
+    </section>
+
+    <!-- ===================== COUNTDOWN ===================== -->
+    <section class="tab-panel" id="panel-countdown">
+      <!-- Picker -->
+      <div class="cd-picker" id="cd-picker">
+        <div class="cd-picker-title">SET TIME</div>
+        <div class="cd-picker-row">
+          <div class="cd-unit">
+            <button class="cd-arrow up" data-unit="h">▲</button>
+            <span class="cd-value" id="cd-hVal">00</span>
+            <button class="cd-arrow dn" data-unit="h">▼</button>
+            <span class="cd-unit-label">HH</span>
+          </div>
+          <span class="cd-colon">:</span>
+          <div class="cd-unit">
+            <button class="cd-arrow up" data-unit="m">▲</button>
+            <span class="cd-value" id="cd-mVal">05</span>
+            <button class="cd-arrow dn" data-unit="m">▼</button>
+            <span class="cd-unit-label">MM</span>
+          </div>
+          <span class="cd-colon">:</span>
+          <div class="cd-unit">
+            <button class="cd-arrow up" data-unit="s">▲</button>
+            <span class="cd-value" id="cd-sVal">00</span>
+            <button class="cd-arrow dn" data-unit="s">▼</button>
+            <span class="cd-unit-label">SS</span>
+          </div>
+        </div>
+        <button class="btn btn-start" id="cd-startBtn" style="margin-top:28px;">START</button>
+      </div>
+      <!-- Running view -->
+      <div id="cd-timerWrap" style="display:none;">
+        <div class="timer-container">
+          <svg class="ring-svg" viewBox="0 0 240 240">
+            <circle class="ring-bg"  cx="120" cy="120" r="108"></circle>
+            <circle class="ring-progress cd-ring" id="cd-ring" cx="120" cy="120" r="108"></circle>
+          </svg>
+          <div class="timer-inner">
+            <div class="timer-display" id="cd-display">00:00:00</div>
+            <div class="timer-label"  id="cd-label">Counting down</div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-stop"  id="cd-pauseBtn">PAUSE</button>
+          <button class="btn btn-reset" id="cd-resetBtn">RESET</button>
+        </div>
+      </div>
+      <!-- Finished state -->
+      <div class="cd-finished" id="cd-finished" style="display:none;">
+        <div class="cd-finished-icon">⏰</div>
+        <div class="cd-finished-text">TIME'S UP!</div>
+        <button class="btn btn-start" id="cd-doneBtn" style="margin-top:20px;">DONE</button>
+      </div>
+    </section>
+
+    <!-- ===================== CLOCK ===================== -->
+    <section class="tab-panel" id="panel-clock">
+      <div class="clock-wrap">
+        <svg class="clock-svg" viewBox="0 0 240 240">
+          <circle cx="120" cy="120" r="114" fill="none" stroke="rgba(0,229,255,0.12)" stroke-width="1"/>
+          <circle cx="120" cy="120" r="108" fill="#111827" stroke="rgba(0,229,255,0.22)" stroke-width="2"/>
+          <g id="clockMarkers"></g>
+          <line id="hourHand"   class="hand hand-hour"   x1="120" y1="120" x2="120" y2="55"  stroke-linecap="round"/>
+          <line id="minuteHand" class="hand hand-minute" x1="120" y1="120" x2="120" y2="35"  stroke-linecap="round"/>
+          <line id="secondHand" class="hand hand-second" x1="120" y1="120" x2="120" y2="28"  stroke-linecap="round"/>
+          <line id="secondTail" class="hand hand-second-tail" x1="120" y1="120" x2="120" y2="148" stroke-linecap="round"/>
+          <circle cx="120" cy="120" r="4.5" fill="var(--accent)" style="filter:drop-shadow(0 0 4px var(--accent-glow))"/>
+          <circle cx="120" cy="120" r="2" fill="#0a0e1a"/>
+        </svg>
+        <div class="clock-digital" id="clockDigital">00:00:00</div>
+        <div class="clock-date"    id="clockDate"></div>
+      </div>
+    </section>
+
   </div>
 
   <script src="script.js"></script>
